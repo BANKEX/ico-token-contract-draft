@@ -1,0 +1,29 @@
+{
+  "name": "ico-token-draft",
+  "version": "0.0.1",
+  "description": "BankEx token crowdsale contracts",
+  "main": "truffle-config.js",
+  "scripts": {
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BankEx/ico-token-draft.git"
+  },
+  "keywords": [
+    "bankex",
+    "ethereum",
+    "ico"
+  ],
+  "author": "BankEx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BankEx/ico-token-draft/issues"
+  },
+  "homepage": "https://github.com/BankEx/ico-token-draft#readme",
+  "devDependencies": {
+    "ethereumjs-testrpc": "^4.0.1",
+    "truffle": "^3.4.8",
+    "zeppelin-solidity": "^1.2.0"
+  }
+}
