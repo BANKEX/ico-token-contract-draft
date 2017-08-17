@@ -1,19 +1,13 @@
-var BankExCrowdsale = artifacts.require("BankExCrowdsale.sol");
+const BankExCrowdsale = artifacts.require("BankExCrowdsale.sol");
 
-contract('BankExCrowdsale', function(accounts) {
-  it("should forward funds to BankEx", function() {
-    var bkxTokenOwner = accounts[0];
-    var bkxInvestor = accounts[1];
-    var initialBalance = web3.eth.getBalance(bkxTokenOwner);
-    var purchaseValue = web3.toWei(1, "ether");
+contract('BankExCrowdsale', function([bkxTokenOwner, bkxInvestor, _]) {
 
-    return BankExCrowdsale.deployed()
-    .then(function(bkxCrowdsale) {
-      return bkxCrowdsale.buyTokens(bkxInvestor, {from: bkxInvestor, value: purchaseValue});
-    })
-    .then(function() {
-      var newBalance = web3.eth.getBalance(bkxTokenOwner);
-      assert.equal(newBalance.toNumber(), initialBalance.plus(purchaseValue));
-    });
+  it("should forward funds to BankEx", async function() {
+    const initialBalance = web3.eth.getBalance(bkxTokenOwner);
+    const purchaseValue = web3.toWei(1, "ether");
+    const bkxCrowdsale = await BankExCrowdsale.deployed();
+    await bkxCrowdsale.buyTokens(bkxInvestor, {from: bkxInvestor, value: purchaseValue});
+    const newBalance = web3.eth.getBalance(bkxTokenOwner);
+    assert.equal(newBalance.toNumber(), initialBalance.plus(purchaseValue));
   });
 });

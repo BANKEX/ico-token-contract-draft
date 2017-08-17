@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "BankEx token crowdsale contracts",
   "main": "truffle-config.js",
+  "engines": {
+    "node": "^8.0.0"
+  },
   "scripts": {
     "test": "truffle test"
   },
