@@ -183,7 +183,7 @@ contract TokenEscrow {
 	// Incoming transfer from the Presale token buyer
 	function() payable {
 
-		uint tokenAmount; // Amount of tokens which is possible to buy for incoming transfer/payment
+		uint tokenAmount; // Amount of tzokens which is possible to buy for incoming transfer/payment
 		uint amountToBePaid; // Amount to be paid
 		uint amountTransfered = msg.value; // Cost/price in WEI of incoming transfer/payment
 
