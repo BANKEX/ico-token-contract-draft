@@ -80,24 +80,19 @@ contract BankExCrowdsale is Ownable {
   }
 
   function () payable {
-    require(msg.value != 0);
     doPurchase(msg.sender, msg.value);
     wallet.transfer(msg.value);
   }
 
   function doExternalPurchase(address investor, uint256 value) public onlyOwner {
     require(investor != address(0));
-    require(value != 0);
     doPurchase(investor, value);
-    // test non-payable
-  }
-
-  function validPurchase() internal constant returns (bool) {
-    return now >= startTime && now <= endTime;
   }
 
   function doPurchase(address investor, uint256 value) private {
-    require(validPurchase());
+    require(value != 0);
+    require(now >= startTime);
+    require(now <= endTime);
     uint256 tokens = calculatePurchase(value);
     token.mint(investor, tokens);
     TokenPurchase(investor, value, tokens);
