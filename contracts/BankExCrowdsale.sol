@@ -23,8 +23,15 @@ contract BankExCrowdsale is Ownable {
 
   Tranche[10] public tranches;
   uint256 public numberOfTranches;
+
+  uint256 public minWei = 10; //TODO
+
   uint256 public currentTrancheNumber = 0;
   uint256 public tokensSold = 0;
+  uint256 public maxTokens = 0;
+
+  bool public finalized = false;
+  uint256 public teamShareDenominator;
 
   /**
    * event for token purchase logging
@@ -34,7 +41,7 @@ contract BankExCrowdsale is Ownable {
    */
   event TokenPurchase(address indexed investor, uint256 value, uint256 amount);
 
-  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet) {
+  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet, uint256 _teamShareDenominator) {
     require(_trancheAmounts.length == _tranchePrices.length);
     numberOfTranches = _trancheAmounts.length;
     require(numberOfTranches <= 10);
@@ -42,24 +49,23 @@ contract BankExCrowdsale is Ownable {
     require(_endTime > _startTime);
     require(_presaleConversion != address(0));
     require(_wallet != address(0));
+    require(_teamShareDenominator > 0);
 
     token = new BankExToken(_presaleConversion);
     startTime = _startTime;
     endTime = _endTime;
     wallet = _wallet;
+    teamShareDenominator = _teamShareDenominator;
 
-    uint256 currentTrancheUpperBound = 0;
     for(uint256 i = 0; i < numberOfTranches; i++) {
-      currentTrancheUpperBound += _trancheAmounts[i];
-      tranches[i].amountUpperBound = currentTrancheUpperBound;
+      maxTokens += _trancheAmounts[i];
+      tranches[i].amountUpperBound = maxTokens;
       tranches[i].price = _tranchePrices[i];
     }
   }
 
   function calculatePurchase(uint256 value) private returns(uint256 purchase) {
-    // TODO: ico is over
     // TODO: safe math?
-
     purchase = 0;
     for (; currentTrancheNumber < numberOfTranches; currentTrancheNumber++) {
       Tranche storage currentTranche = tranches[currentTrancheNumber];
@@ -74,32 +80,46 @@ contract BankExCrowdsale is Ownable {
       }
     }
 
+    assert(tokensSold <= maxTokens);
     return purchase;
     // TODO: if (value > 0)
     // this m we have unspent ether. Either give the change, or give premial tokens
   }
 
   function () payable {
+    //TODO: KYC
     doPurchase(msg.sender, msg.value);
     wallet.transfer(msg.value);
   }
 
   function doExternalPurchase(address investor, uint256 value) public onlyOwner {
-    require(investor != address(0));
     doPurchase(investor, value);
   }
 
   function doPurchase(address investor, uint256 value) private {
-    require(value != 0);
-    require(now >= startTime);
-    require(now <= endTime);
+    require(investor != address(0));
+    require(value >= minWei);
+    require(isRunning());
+
     uint256 tokens = calculatePurchase(value);
-    token.mint(investor, tokens);
+    assert(token.mint(investor, tokens));
     TokenPurchase(investor, value, tokens);
   }
 
-  // @return true if crowdsale event has ended
+  function finalize() public { //TODO: why onlyOwner?
+    require(!finalized);
+    require(hasEnded());
+    finalized = true;
+    assert(token.mint(wallet, token.totalSupply() / teamShareDenominator)); //TODO: which wallet?
+    assert(token.finishMinting());
+    // selfdestruct(wallet); // TODO: should we?
+  }
+
+  function isRunning() public constant returns (bool) {
+    return now >= startTime && now <= endTime && tokensSold < maxTokens;
+  }
+
   function hasEnded() public constant returns (bool) {
-    return now > endTime;
+    return now > endTime || tokensSold == maxTokens;
   }
 }
