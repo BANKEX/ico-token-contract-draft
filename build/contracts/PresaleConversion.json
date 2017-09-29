@@ -1,0 +1,257 @@
+{
+  "contract_name": "PresaleConversion",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "pbkxValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFromOwner",
+      "outputs": [
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "multiplier",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "pbkxAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "pbkxToBkxExchangeRate",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "bkxDecimals",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_bkxAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setBkxAddress",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "bkxContract",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "pbkxTotalSupply",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "pbkxDecimals",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_pbkxAddress",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "investor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "pbkxValue",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "bkxValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "Conversion",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000f57600080fd5b604051602080610584833981016040528080519150505b5b60008054600160a060020a03191633600160a060020a03161790555b600160a060020a038116151561005857600080fd5b60018054600160a060020a031916600160a060020a0383161790555b505b6104ff806100856000396000f300606060405236156100ac5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416630f18ac0781146100b15780631b3ed722146100e75780631cf701111461010c5780632259f44a1461013b5780632318b5841461016057806326662a7a146101855780635b5d453e146101a65780638d253391146101d55780638da5cb5b146101fa5780639e35e1cf14610229578063f2fde38b1461024e575b600080fd5b34156100bc57600080fd5b6100d3600160a060020a036004351660243561026f565b604051901515815260200160405180910390f35b34156100f257600080fd5b6100fa61038e565b60405190815260200160405180910390f35b341561011757600080fd5b61011f610399565b604051600160a060020a03909116815260200160405180910390f35b341561014657600080fd5b6100fa6103a8565b60405190815260200160405180910390f35b341561016b57600080fd5b6100fa6103ad565b60405190815260200160405180910390f35b341561019057600080fd5b6101a4600160a060020a03600435166103b2565b005b34156101b157600080fd5b61011f61040f565b604051600160a060020a03909116815260200160405180910390f35b34156101e057600080fd5b6100fa61041e565b60405190815260200160405180910390f35b341561020557600080fd5b61011f610426565b604051600160a060020a03909116815260200160405180910390f35b341561023457600080fd5b6100fa610435565b60405190815260200160405180910390f35b341561025957600080fd5b6101a4600160a060020a036004351661043a565b005b600154600090819033600160a060020a0390811691161461028f57600080fd5b82151561029b57600080fd5b50600254662386f26fc10000830290600160a060020a031663a9059cbb85836000604051602001526040517c010000000000000000000000000000000000000000000000000000000063ffffffff8516028152600160a060020a0390921660048301526024820152604401602060405180830381600087803b151561031f57600080fd5b6102c65a03f1151561033057600080fd5b505050604051805192505081156103865783600160a060020a03167f7f5d2abcc7049d493ba3d899d9c652fd8d27e9aaf5ecf58408d04567931d4e72848360405191825260208201526040908101905180910390a25b5b5092915050565b662386f26fc1000081565b600154600160a060020a031681565b600181565b601281565b60005433600160a060020a039081169116146103cd57600080fd5b600160a060020a03811615156103e257600080fd5b6002805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b5b50565b600254600160a060020a031681565b6311e1a30081565b600054600160a060020a031681565b600281565b60005433600160a060020a0390811691161461045557600080fd5b600160a060020a038116151561046a57600080fd5b600054600160a060020a0380831691167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a36000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b5b505600a165627a7a7230582038e4010d4f4d0662d17e132112b8f0213ed734b6df0e70c0be95a64e7c86020e0029",
+  "networks": {
+    "3": {
+      "events": {
+        "0x7f5d2abcc7049d493ba3d899d9c652fd8d27e9aaf5ecf58408d04567931d4e72": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "investor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "pbkxValue",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "name": "bkxValue",
+              "type": "uint256"
+            }
+          ],
+          "name": "Conversion",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xa7840d9ae18e5a3aca123288bcfa95a90c8f25dc",
+      "updated_at": 1506709962259
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1506709962259
+}
