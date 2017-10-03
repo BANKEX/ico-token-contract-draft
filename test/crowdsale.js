@@ -116,12 +116,6 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
       event.args.amount.should.be.bignumber.equal(expectedTokenAmount)
     })
 
-    it('should increase totalSupply', async function () {
-      await this.crowdsale.sendTransaction({value: value, from: investor})
-      const totalSupply = await this.token.totalSupply()
-      totalSupply.should.be.bignumber.equal(this.initialSupply.plus(expectedTokenAmount))
-    })
-
     it('should assign tokens to sender', async function () {
       await this.crowdsale.sendTransaction({value: value, from: investor})
       let balance = await this.token.balanceOf(investor);
@@ -153,12 +147,6 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
       event.args.investor.should.equal(investor)
       event.args.value.should.be.bignumber.equal(value)
       event.args.amount.should.be.bignumber.equal(expectedTokenAmount)
-    })
-
-    it('should increase totalSupply', async function () {
-      await this.crowdsale.doExternalPurchase(investor, value, receipt)
-      const totalSupply = await this.token.totalSupply()
-      totalSupply.should.be.bignumber.equal(this.initialSupply.plus(expectedTokenAmount))
     })
 
     it('should assign tokens to investor', async function () {

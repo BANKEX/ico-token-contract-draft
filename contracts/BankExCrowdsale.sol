@@ -110,7 +110,7 @@ contract BankExCrowdsale is Ownable {
     require(isRunning());
 
     uint256 tokens = calculatePurchase(value);
-    assert(token.mint(investor, tokens));
+    assert(token.transfer(investor, tokens));
     TokenPurchase(investor, value, tokens);
   }
 
@@ -118,8 +118,8 @@ contract BankExCrowdsale is Ownable {
     require(!finalized);
     require(hasEnded());
     finalized = true;
-    assert(token.mint(wallet, token.totalSupply() / teamShareDenominator)); //TODO: which wallet?
-    assert(token.finishMinting());
+    assert(token.transfer(wallet, token.balanceOf(this))); //TODO: which wallet?
+    assert(token.unfreeze());
     // selfdestruct(wallet); // TODO: should we?
   }
 
