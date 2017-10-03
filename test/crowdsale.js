@@ -15,10 +15,11 @@ const BankExCrowdsale = artifacts.require('BankExCrowdsale');
 const PresaleConversion = artifacts.require('PresaleConversion');
 const MintableToken = artifacts.require('MintableToken')
 
-contract('BankExCrowdsale', function ([_, investor, wallet, purchaser]) {
+contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
 
   const rate = new BigNumber(1000)
   const value = new BigNumber(1000000)
+  const receipt = 123;
 
   const expectedTokenAmount = value.div(rate)
 
@@ -53,29 +54,55 @@ contract('BankExCrowdsale', function ([_, investor, wallet, purchaser]) {
 
   describe('accepting payments', function () {
 
+    beforeEach(async function() {
+      await this.crowdsale.register(investor);
+    })
+
     it('should reject payments before start', async function () {
-      await this.crowdsale.send(value).should.be.rejectedWith(EVMThrow)
       await this.crowdsale.sendTransaction({value: value, from: investor}).should.be.rejectedWith(EVMThrow)
     })
 
     it('should accept payments after start', async function () {
       await increaseTimeTo(this.startTime)
-      await this.crowdsale.send(value).should.be.fulfilled
       await this.crowdsale.sendTransaction({value: value, from: investor}).should.be.fulfilled
     })
 
     it('should reject payments after end', async function () {
       await increaseTimeTo(this.afterEndTime)
-      await this.crowdsale.send(value).should.be.rejectedWith(EVMThrow)
       await this.crowdsale.sendTransaction({value: value, from: investor}).should.be.rejectedWith(EVMThrow)
     })
 
+  })
+
+  describe('KYC', function () {
+
+    it('only owner can register investor', async function () {
+      await this.crowdsale.register(investor, {from: notOwner}).should.be.rejectedWith(EVMThrow)
+    })
+
+    it('investor should be specified', async function () {
+       await this.crowdsale.register(0, {from: owner}).should.be.rejectedWith(EVMThrow)
+    })
+
+    it('same investor can not be registered twice', async function () {
+      await this.crowdsale.register(investor, {from: owner})
+      await this.crowdsale.register(investor, {from: owner}).should.be.rejectedWith(EVMThrow)
+    })
+
+    it('transfer from unknown investor is rejected', async function () {
+      await this.crowdsale.sendTransaction({value: value, from: investor}).should.be.rejectedWith(EVMThrow)
+    })
+
+    it('external purchase for unknown investor is rejected', async function () {
+      await this.crowdsale.doExternalPurchase(investor, value, receipt, {from: owner}).should.be.rejectedWith(EVMThrow)
+    })
   })
 
   describe('ethereum purchase', function () {
 
     beforeEach(async function() {
       await increaseTimeTo(this.startTime)
+      await this.crowdsale.register(investor);
     })
 
     it('should log purchase', async function () {
@@ -90,7 +117,7 @@ contract('BankExCrowdsale', function ([_, investor, wallet, purchaser]) {
     })
 
     it('should increase totalSupply', async function () {
-      await this.crowdsale.send(value)
+      await this.crowdsale.sendTransaction({value: value, from: investor})
       const totalSupply = await this.token.totalSupply()
       totalSupply.should.be.bignumber.equal(this.initialSupply.plus(expectedTokenAmount))
     })
@@ -114,10 +141,11 @@ contract('BankExCrowdsale', function ([_, investor, wallet, purchaser]) {
 
     beforeEach(async function() {
       await increaseTimeTo(this.startTime)
+      await this.crowdsale.register(investor);
     })
 
     it('should log purchase', async function () {
-      const {logs} = await this.crowdsale.doExternalPurchase(investor, value)
+      const {logs} = await this.crowdsale.doExternalPurchase(investor, value, receipt)
 
       const event = logs.find(e => e.event === 'TokenPurchase')
 
@@ -128,13 +156,13 @@ contract('BankExCrowdsale', function ([_, investor, wallet, purchaser]) {
     })
 
     it('should increase totalSupply', async function () {
-      await this.crowdsale.doExternalPurchase(investor, value)
+      await this.crowdsale.doExternalPurchase(investor, value, receipt)
       const totalSupply = await this.token.totalSupply()
       totalSupply.should.be.bignumber.equal(this.initialSupply.plus(expectedTokenAmount))
     })
 
     it('should assign tokens to investor', async function () {
-      await this.crowdsale.doExternalPurchase(investor, value)
+      await this.crowdsale.doExternalPurchase(investor, value, receipt)
       const balance = await this.token.balanceOf(investor)
       balance.should.be.bignumber.equal(expectedTokenAmount)
     })

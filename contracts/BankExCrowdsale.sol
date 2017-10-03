@@ -33,6 +33,8 @@ contract BankExCrowdsale is Ownable {
   bool public finalized = false;
   uint256 public teamShareDenominator;
 
+  mapping(address => bool) public registered;
+
   /**
    * event for token purchase logging
    * @param investor who got the tokens
@@ -86,18 +88,24 @@ contract BankExCrowdsale is Ownable {
     // this m we have unspent ether. Either give the change, or give premial tokens
   }
 
-  function () payable {
-    //TODO: KYC
+  function register(address investor) public onlyOwner {
+    require(investor != address(0));
+    require(!registered[investor]);
+    registered[investor] = true;
+  }
+
+  function () public payable {
     doPurchase(msg.sender, msg.value);
     wallet.transfer(msg.value);
   }
 
-  function doExternalPurchase(address investor, uint256 value) public onlyOwner {
+  function doExternalPurchase(address investor, uint256 value, uint256 receipt) public onlyOwner {
+    require(receipt != 0);
     doPurchase(investor, value);
   }
 
   function doPurchase(address investor, uint256 value) private {
-    require(investor != address(0));
+    require(registered[investor]);
     require(value >= minWei);
     require(isRunning());
 
