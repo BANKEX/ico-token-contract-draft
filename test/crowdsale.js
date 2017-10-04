@@ -96,6 +96,26 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
     it('external purchase for unknown investor is rejected', async function () {
       await this.crowdsale.doExternalPurchase(investor, value, receipt, {from: owner}).should.be.rejectedWith(EVMThrow)
     })
+
+    it('unknown investor has no registered status', async function () {
+      const registered = await this.crowdsale.registered(investor)
+      registered.should.equal(false)
+    })
+
+    it('registered investor has registered status', async function () {
+      await this.crowdsale.register(investor, {from: owner})
+      const registered = await this.crowdsale.registered(investor)
+      registered.should.equal(true)
+    })
+
+    it('registration is logged', async function () {
+      const {logs} = await this.crowdsale.register(investor, {from: owner})
+      const event = logs.find(e => e.event === 'Registration')
+
+      should.exist(event)
+      event.args.investor.should.equal(investor)
+      event.args.status.should.equal(true)      
+    })
   })
 
   describe('ethereum purchase', function () {

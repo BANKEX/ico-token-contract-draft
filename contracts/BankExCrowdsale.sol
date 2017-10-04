@@ -85,10 +85,13 @@ contract BankExCrowdsale is Ownable {
     // this m we have unspent ether. Either give the change, or give premial tokens
   }
 
+  event Registration(address indexed investor, bool status);
+
   function register(address investor) public onlyOwner {
     require(investor != address(0));
     require(!registered[investor]);
     registered[investor] = true;
+    Registration(investor, true);
   }
 
   function () public payable {
