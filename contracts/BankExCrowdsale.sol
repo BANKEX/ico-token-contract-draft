@@ -31,7 +31,6 @@ contract BankExCrowdsale is Ownable {
   uint256 public maxTokens = 0;
 
   bool public finalized = false;
-  uint256 public teamShareDenominator;
 
   mapping(address => bool) public registered;
 
@@ -43,7 +42,7 @@ contract BankExCrowdsale is Ownable {
    */
   event TokenPurchase(address indexed investor, uint256 value, uint256 amount);
 
-  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet, uint256 _teamShareDenominator) {
+  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet) {
     require(_trancheAmounts.length == _tranchePrices.length);
     numberOfTranches = _trancheAmounts.length;
     require(numberOfTranches <= 10);
@@ -51,13 +50,11 @@ contract BankExCrowdsale is Ownable {
     require(_endTime > _startTime);
     require(_presaleConversion != address(0));
     require(_wallet != address(0));
-    require(_teamShareDenominator > 0);
 
     token = new BankExToken(_presaleConversion);
     startTime = _startTime;
     endTime = _endTime;
     wallet = _wallet;
-    teamShareDenominator = _teamShareDenominator;
 
     for(uint256 i = 0; i < numberOfTranches; i++) {
       maxTokens += _trancheAmounts[i];

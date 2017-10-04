@@ -33,7 +33,7 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
     this.endTime =   this.startTime + duration.weeks(1);
     this.afterEndTime = this.endTime + duration.seconds(1);
 
-    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, wallet, 3);
+    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, wallet);
     this.token = MintableToken.at(await this.crowdsale.token());
 
     this.initialSupply = await this.token.totalSupply();
