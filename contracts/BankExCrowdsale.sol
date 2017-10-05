@@ -21,6 +21,11 @@ contract BankExCrowdsale is Ownable {
   // address where funds are collected
   address public wallet;
 
+  // account that is authorized to:
+  // - distribute tokens on behalf of investor without making Ether transfer
+  // - register investors
+  address public externalOracle;
+
   Tranche[10] public tranches;
   uint256 public numberOfTranches;
 
@@ -42,7 +47,28 @@ contract BankExCrowdsale is Ownable {
    */
   event TokenPurchase(address indexed investor, uint256 value, uint256 amount);
 
-  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet, uint256 _minimumContributionInWei) {
+  event ExternalOracleChanged(address indexed previousExternalOracle, address indexed newExternalOracle);
+
+  /**
+   * @dev Allows to be called by the external oracle account only.
+   */
+  modifier onlyExternalOracle() {
+    require(msg.sender == externalOracle);
+    _;
+  }
+
+  /**
+   * @dev Allows the owner to change the external oracle account.
+   * Can be used in case of emergency, e.g. the current external oracle is compromised.
+   * @param newExternalOracle Address of the new external oracle account.
+   */
+  function changeExternalOracle(address newExternalOracle) public onlyOwner {
+    require(newExternalOracle != address(0));
+    ExternalOracleChanged(externalOracle, newExternalOracle);
+    externalOracle = newExternalOracle;    
+  }
+
+  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet, uint256 _minimumContributionInWei, address _externalOracle) {
     require(_trancheAmounts.length == _tranchePrices.length);
     numberOfTranches = _trancheAmounts.length;
     require(numberOfTranches <= 10);
@@ -51,12 +77,14 @@ contract BankExCrowdsale is Ownable {
     require(_presaleConversion != address(0));
     require(_wallet != address(0));
     /*require(_minimumContributionInWei >= uint256(10) ** 15);*/
+    require(_externalOracle != address(0));
 
     token = new BankExToken(_presaleConversion);
     startTime = _startTime;
     endTime = _endTime;
     wallet = _wallet;
     minimumContributionInWei = _minimumContributionInWei;
+    externalOracle = _externalOracle;
 
     for(uint256 i = 0; i < numberOfTranches; i++) {
       maxTokens += _trancheAmounts[i];
@@ -89,7 +117,7 @@ contract BankExCrowdsale is Ownable {
 
   event Registration(address indexed investor, bool status);
 
-  function register(address investor) public onlyOwner {
+  function register(address investor) public onlyExternalOracle {
     require(investor != address(0));
     require(!registered[investor]);
     registered[investor] = true;
@@ -101,7 +129,7 @@ contract BankExCrowdsale is Ownable {
     wallet.transfer(msg.value);
   }
 
-  function doExternalPurchase(address investor, uint256 value, uint256 receipt) public onlyOwner {
+  function doExternalPurchase(address investor, uint256 value, uint256 receipt) public onlyExternalOracle {
     require(receipt != 0);
     doPurchase(investor, value);
   }

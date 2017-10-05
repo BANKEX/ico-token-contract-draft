@@ -11,7 +11,7 @@ module.exports = function(deployer) {
   .then(function() {
     const startTime = web3.eth.getBlock('latest').timestamp + 30 * 60; // Math.floor(Date.now() / 1000); // seconds
     const endTime = startTime + 7 * 24 * 60 * 60; // + 1 week
-    return deployer.deploy(BankExCrowdsale, [10, 10, 10], [10, 20, 30], startTime, endTime, PresaleConversion.address, web3.eth.accounts[0], 10 ** 15);
+    return deployer.deploy(BankExCrowdsale, [10, 10, 10], [10, 20, 30], startTime, endTime, PresaleConversion.address, web3.eth.accounts[0], 10 ** 15, web3.eth.accounts[1]);
   })
   .then(function() {
     return BankExCrowdsale.deployed();
