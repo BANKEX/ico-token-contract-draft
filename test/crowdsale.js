@@ -33,7 +33,7 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
     this.endTime =   this.startTime + duration.weeks(1);
     this.afterEndTime = this.endTime + duration.seconds(1);
 
-    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, wallet);
+    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, wallet, 1000000);
     this.token = MintableToken.at(await this.crowdsale.token());
 
     this.initialSupply = await this.token.totalSupply();
@@ -114,7 +114,7 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
 
       should.exist(event)
       event.args.investor.should.equal(investor)
-      event.args.status.should.equal(true)      
+      event.args.status.should.equal(true)
     })
   })
 
@@ -123,6 +123,10 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
     beforeEach(async function() {
       await increaseTimeTo(this.startTime)
       await this.crowdsale.register(investor);
+    })
+
+    it('payments bellow minimum contribution are rejected', async function () {      
+      await this.crowdsale.sendTransaction({value: 1000, from: investor}).should.be.rejectedWith(EVMThrow)
     })
 
     it('should log purchase', async function () {
@@ -156,6 +160,10 @@ contract('BankExCrowdsale', function ([owner, notOwner, _, investor, wallet]) {
     beforeEach(async function() {
       await increaseTimeTo(this.startTime)
       await this.crowdsale.register(investor);
+    })
+
+    it('payments bellow minimum contribution are rejected', async function () {
+      await this.crowdsale.doExternalPurchase(investor, 1000, receipt).should.be.rejectedWith(EVMThrow)
     })
 
     it('should log purchase', async function () {

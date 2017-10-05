@@ -24,7 +24,7 @@ contract BankExCrowdsale is Ownable {
   Tranche[10] public tranches;
   uint256 public numberOfTranches;
 
-  uint256 public minWei = 10; //TODO
+  uint256 public minimumContributionInWei;
 
   uint256 public currentTrancheNumber = 0;
   uint256 public tokensSold = 0;
@@ -42,7 +42,7 @@ contract BankExCrowdsale is Ownable {
    */
   event TokenPurchase(address indexed investor, uint256 value, uint256 amount);
 
-  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet) {
+  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet, uint256 _minimumContributionInWei) {
     require(_trancheAmounts.length == _tranchePrices.length);
     numberOfTranches = _trancheAmounts.length;
     require(numberOfTranches <= 10);
@@ -50,11 +50,13 @@ contract BankExCrowdsale is Ownable {
     require(_endTime > _startTime);
     require(_presaleConversion != address(0));
     require(_wallet != address(0));
+    /*require(_minimumContributionInWei >= uint256(10) ** 15);*/
 
     token = new BankExToken(_presaleConversion);
     startTime = _startTime;
     endTime = _endTime;
     wallet = _wallet;
+    minimumContributionInWei = _minimumContributionInWei;
 
     for(uint256 i = 0; i < numberOfTranches; i++) {
       maxTokens += _trancheAmounts[i];
@@ -106,7 +108,7 @@ contract BankExCrowdsale is Ownable {
 
   function doPurchase(address investor, uint256 value) private {
     require(registered[investor]);
-    require(value >= minWei);
+    require(value >= minimumContributionInWei);
     require(isRunning());
 
     uint256 tokens = calculatePurchase(value);
