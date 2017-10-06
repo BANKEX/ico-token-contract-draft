@@ -50,6 +50,7 @@ contract BankExCrowdsale is Ownable {
   event TokenPurchase(address indexed investor, uint256 value, uint256 amount);
 
   event ExternalOracleChanged(address indexed previousExternalOracle, address indexed newExternalOracle);
+  event Finalized(uint256 tokensSold);
 
   /**
    * @dev Allows to be called by the external oracle account only.
@@ -160,12 +161,13 @@ contract BankExCrowdsale is Ownable {
     TokenPurchase(investor, value, tokens);
   }
 
-  function finalize() public { //TODO: why onlyOwner?
+  function finalize() public { //TODO: onlyOwner?
     require(!finalized);
     require(hasEnded());
     finalized = true;
     assert(token.transfer(bankexTokenWallet, token.balanceOf(this)));
     assert(token.unfreeze());
+    Finalized(tokensSold);
     // selfdestruct(bankexEtherWallet); // TODO: should we?
   }
 

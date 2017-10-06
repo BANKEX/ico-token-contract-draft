@@ -17,6 +17,7 @@ const MintableToken = artifacts.require('MintableToken')
 
 contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _, investor, bankexEtherWallet, bankexTokenWallet, externalOracle]) {
 
+  const tokens = new BigNumber(1000000000000)
   const rate = new BigNumber(1000)
   const value = new BigNumber(1000000)
   const receipt = 123
@@ -33,7 +34,7 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
     this.endTime =   this.startTime + duration.weeks(1)
     this.afterEndTime = this.endTime + duration.seconds(1)
 
-    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle)
+    this.crowdsale = await BankExCrowdsale.new([tokens], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle)
     this.token = MintableToken.at(await this.crowdsale.token())
 
     this.initialSupply = await this.token.totalSupply()
@@ -218,6 +219,65 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
       await this.crowdsale.doExternalPurchase(investor, value, receipt, {from: externalOracle})
       const balance = await this.token.balanceOf(investor)
       balance.should.be.bignumber.equal(expectedTokenAmount)
+    })
+  })
+
+  describe('finalization', function () {
+
+    beforeEach(async function() {
+      // await increaseTimeTo(this.startTime)
+    })
+
+    it('can be called only once', async function () {
+      await increaseTimeTo(this.afterEndTime)
+      await this.crowdsale.finalize()
+      await this.crowdsale.finalize().should.be.rejectedWith(EVMThrow)
+    })
+
+    it('can not be called before end', async function () {
+      await increaseTimeTo(this.startTime)
+      await this.crowdsale.finalize().should.be.rejectedWith(EVMThrow)
+    })
+
+    it('can be called before end if all tokens are sold', async function () {
+      await increaseTimeTo(this.startTime)
+      await this.crowdsale.register(investor, {from: externalOracle})
+      await this.crowdsale.doExternalPurchase(investor, tokens.mul(rate), receipt, {from: externalOracle})
+      // console.log(await this.crowdsale.tokensSold())
+      // console.log(await this.crowdsale.maxTokens())
+      await this.crowdsale.finalize()
+    })
+
+    it('transfers undistributed tokens to BankEx token wallet', async function () {
+      await increaseTimeTo(this.afterEndTime)
+      const crowdsaleBalance = await this.token.balanceOf(this.crowdsale.address)
+      await this.crowdsale.finalize()
+      const balance = await this.token.balanceOf(bankexTokenWallet)
+      balance.should.be.bignumber.equal(crowdsaleBalance)
+    })
+
+    it('starts token circulation', async function () {
+      await increaseTimeTo(this.startTime)
+      await this.crowdsale.register(investor, {from: externalOracle})
+      await this.crowdsale.doExternalPurchase(investor, tokens.mul(rate), receipt, {from: externalOracle})
+      await this.token.transfer(someAccount, 1, {from: investor}).should.be.rejectedWith(EVMThrow)
+
+      await increaseTimeTo(this.afterEndTime)
+      await this.crowdsale.finalize()
+
+      await this.token.transfer(someAccount, 1, {from: investor})
+      const balance = await this.token.balanceOf(someAccount)
+      balance.should.be.bignumber.equal(1)
+    })
+
+    it('logs event', async function () {
+      await increaseTimeTo(this.startTime)
+      await this.crowdsale.register(investor, {from: externalOracle})
+      await this.crowdsale.doExternalPurchase(investor, tokens.mul(rate), receipt, {from: externalOracle})
+      const {logs} = await this.crowdsale.finalize()
+      const event = logs.find(e => e.event === 'Finalized')
+      should.exist(event)
+      event.args.tokensSold.should.be.bignumber.equal(tokens)
     })
   })
 })
