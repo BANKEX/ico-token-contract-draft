@@ -3,8 +3,10 @@ pragma solidity ^0.4.11;
 import "./BankExToken.sol";
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import "zeppelin-solidity/contracts/math/Math.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract BankExCrowdsale is Ownable {
+  using SafeMath for uint256;
 
   struct Tranche {
     uint256 amountUpperBound;
@@ -101,23 +103,23 @@ contract BankExCrowdsale is Ownable {
     numberOfTranches = _trancheAmounts.length;
     tranches.length = numberOfTranches;
     for(uint256 i = 0; i < numberOfTranches; i++) {
-      maxTokens += _trancheAmounts[i];
+      maxTokens = maxTokens.add(_trancheAmounts[i]);
       tranches[i].amountUpperBound = maxTokens;
       tranches[i].price = _tranchePrices[i];
     }
   }
 
   function calculatePurchase(uint256 value) private returns(uint256 purchase) {
-    // TODO: safe math?
     purchase = 0;
     for (; currentTrancheNumber < numberOfTranches; currentTrancheNumber++) {
       Tranche storage currentTranche = tranches[currentTrancheNumber];
-      uint256 leftInCurrentTranche = currentTranche.amountUpperBound - tokensSold;
-      uint256 purchaseAtCurrentPrice = value / currentTranche.price; // truncated
+      uint256 leftInCurrentTranche = currentTranche.amountUpperBound.sub(tokensSold);
+      uint256 purchaseAtCurrentPrice = value.div(currentTranche.price); // truncated
       uint256 purchaseInCurrentTranche = Math.min256(purchaseAtCurrentPrice, leftInCurrentTranche);
-      purchase += purchaseInCurrentTranche;
-      tokensSold += purchaseInCurrentTranche;
-      value -= purchaseInCurrentTranche * currentTranche.price;
+      purchase = purchase.add(purchaseInCurrentTranche);
+      tokensSold = tokensSold.add(purchaseInCurrentTranche);
+      uint256 purchaseWei = purchaseInCurrentTranche.mul(currentTranche.price);
+      value = value.sub(purchaseWei);
       if (purchaseInCurrentTranche == purchaseAtCurrentPrice) {
         break;
       }
@@ -162,7 +164,7 @@ contract BankExCrowdsale is Ownable {
     require(!finalized);
     require(hasEnded());
     finalized = true;
-    assert(token.transfer(bankexTokenWallet, token.balanceOf(this))); //TODO: which bankexEtherWallet?
+    assert(token.transfer(bankexTokenWallet, token.balanceOf(this)));
     assert(token.unfreeze());
     // selfdestruct(bankexEtherWallet); // TODO: should we?
   }
