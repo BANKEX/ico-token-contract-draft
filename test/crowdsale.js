@@ -11,15 +11,15 @@ const should = require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should()
 
-const BankExCrowdsale = artifacts.require('BankExCrowdsale');
-const PresaleConversion = artifacts.require('PresaleConversion');
+const BankExCrowdsale = artifacts.require('BankExCrowdsale')
+const PresaleConversion = artifacts.require('PresaleConversion')
 const MintableToken = artifacts.require('MintableToken')
 
 contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _, investor, bankexEtherWallet, bankexTokenWallet, externalOracle]) {
 
   const rate = new BigNumber(1000)
   const value = new BigNumber(1000000)
-  const receipt = 123;
+  const receipt = 123
 
   const expectedTokenAmount = value.div(rate)
 
@@ -29,14 +29,14 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
   })
 
   beforeEach(async function () {
-    this.startTime = latestTime() + duration.weeks(1);
-    this.endTime =   this.startTime + duration.weeks(1);
-    this.afterEndTime = this.endTime + duration.seconds(1);
+    this.startTime = latestTime() + duration.weeks(1)
+    this.endTime =   this.startTime + duration.weeks(1)
+    this.afterEndTime = this.endTime + duration.seconds(1)
 
-    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle);
-    this.token = MintableToken.at(await this.crowdsale.token());
+    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle)
+    this.token = MintableToken.at(await this.crowdsale.token())
 
-    this.initialSupply = await this.token.totalSupply();
+    this.initialSupply = await this.token.totalSupply()
   })
 
   it('should have an owner', async function() {
@@ -60,7 +60,7 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
   describe('accepting payments', function () {
 
     beforeEach(async function() {
-      await this.crowdsale.register(investor, {from: externalOracle});
+      await this.crowdsale.register(investor, {from: externalOracle})
     })
 
     it('should reject payments before start', async function () {
@@ -76,7 +76,6 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
       await increaseTimeTo(this.afterEndTime)
       await this.crowdsale.sendTransaction({value: value, from: investor}).should.be.rejectedWith(EVMThrow)
     })
-
   })
 
   describe('KYC', function () {
@@ -122,8 +121,6 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
     })
   })
 
-
-
   describe('external oracle', function () {
 
     it('... should be defined', async function() {
@@ -153,15 +150,13 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
       event.args.previousExternalOracle.should.equal(externalOracle)
       event.args.newExternalOracle.should.equal(newExternalOracle)
     })
-
   })
-
 
   describe('ethereum purchase', function () {
 
     beforeEach(async function() {
       await increaseTimeTo(this.startTime)
-      await this.crowdsale.register(investor, {from: externalOracle});
+      await this.crowdsale.register(investor, {from: externalOracle})
     })
 
     it('payments bellow minimum contribution are rejected', async function () {
@@ -181,7 +176,7 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
 
     it('should assign tokens to sender', async function () {
       await this.crowdsale.sendTransaction({value: value, from: investor})
-      let balance = await this.token.balanceOf(investor);
+      let balance = await this.token.balanceOf(investor)
       balance.should.be.bignumber.equal(expectedTokenAmount)
     })
 
@@ -191,14 +186,13 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
       const post = web3.eth.getBalance(bankexEtherWallet)
       post.minus(pre).should.be.bignumber.equal(value)
     })
-
   })
 
   describe('external purchase', function () {
 
     beforeEach(async function() {
       await increaseTimeTo(this.startTime)
-      await this.crowdsale.register(investor, {from: externalOracle});
+      await this.crowdsale.register(investor, {from: externalOracle})
     })
 
     it('can be called by externalOracle only', async function () {
@@ -225,7 +219,5 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
       const balance = await this.token.balanceOf(investor)
       balance.should.be.bignumber.equal(expectedTokenAmount)
     })
-
   })
-
 })
