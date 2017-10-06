@@ -15,7 +15,7 @@ const BankExCrowdsale = artifacts.require('BankExCrowdsale');
 const PresaleConversion = artifacts.require('PresaleConversion');
 const MintableToken = artifacts.require('MintableToken')
 
-contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _, investor, wallet, externalOracle]) {
+contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _, investor, bankexEtherWallet, bankexTokenWallet, externalOracle]) {
 
   const rate = new BigNumber(1000)
   const value = new BigNumber(1000000)
@@ -33,7 +33,7 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
     this.endTime =   this.startTime + duration.weeks(1);
     this.afterEndTime = this.endTime + duration.seconds(1);
 
-    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, wallet, 1000000, externalOracle);
+    this.crowdsale = await BankExCrowdsale.new([new BigNumber(1000000000000)], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle);
     this.token = MintableToken.at(await this.crowdsale.token());
 
     this.initialSupply = await this.token.totalSupply();
@@ -185,10 +185,10 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
       balance.should.be.bignumber.equal(expectedTokenAmount)
     })
 
-    it('should forward funds to wallet', async function () {
-      const pre = web3.eth.getBalance(wallet)
+    it('should forward funds to bankexEtherWallet', async function () {
+      const pre = web3.eth.getBalance(bankexEtherWallet)
       await this.crowdsale.sendTransaction({value, from: investor})
-      const post = web3.eth.getBalance(wallet)
+      const post = web3.eth.getBalance(bankexEtherWallet)
       post.minus(pre).should.be.bignumber.equal(value)
     })
 

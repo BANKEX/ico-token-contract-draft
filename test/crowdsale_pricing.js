@@ -19,7 +19,7 @@ contract('BankExCrowdsale', function ([_, investor, wallet, externalOracle]) {
     await advanceBlock();
     this.startTime = latestTime() + duration.weeks(1);
     this.endTime =   this.startTime + duration.weeks(1);
-    this.crowdsale = await BankExCrowdsale.new([10, 10, 10], [10, 20, 30], this.startTime, this.endTime, PresaleConversion.address, wallet, 1, externalOracle);
+    this.crowdsale = await BankExCrowdsale.new([10, 10, 10], [10, 20, 30], this.startTime, this.endTime, PresaleConversion.address, wallet, wallet, 1, externalOracle);
     this.crowdsale.register(investor, {from: externalOracle});
     this.token = MintableToken.at(await this.crowdsale.token());
     await increaseTimeTo(this.startTime);

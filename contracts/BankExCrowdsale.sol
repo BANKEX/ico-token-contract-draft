@@ -18,8 +18,8 @@ contract BankExCrowdsale is Ownable {
   uint256 public startTime;
   uint256 public endTime;
 
-  // address where funds are collected
-  address public bankexEtherWallet;
+  address public bankexEtherWallet; // address where collected Ether is transfered
+  address public bankexTokenWallet; // address where undistributed tokens are transfered to after the crowdsale ends
 
   // account that is authorized to:
   // - distribute tokens on behalf of investor without making Ether transfer
@@ -68,23 +68,37 @@ contract BankExCrowdsale is Ownable {
     externalOracle = newExternalOracle;
   }
 
-  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _bankexEtherWallet, uint256 _minimumContributionInWei, address _externalOracle) {
+  function BankExCrowdsale(
+      uint256[] _trancheAmounts,
+      uint256[] _tranchePrices,
+      uint256 _startTime,
+      uint256 _endTime,
+      address _presaleConversion,
+      address _bankexEtherWallet,
+      address _bankexTokenWallet,
+      uint256 _minimumContributionInWei,
+      address _externalOracle
+    ) {
     require(_trancheAmounts.length == _tranchePrices.length);
-    numberOfTranches = _trancheAmounts.length;
+    require(_trancheAmounts.length > 0);
     require(_startTime > now);
     require(_endTime > _startTime);
     require(_presaleConversion != address(0));
     require(_bankexEtherWallet != address(0));
+    require(_bankexTokenWallet != address(0));
     /*require(_minimumContributionInWei >= uint256(10) ** 15);*/
     require(_externalOracle != address(0));
 
     token = new BankExToken(_presaleConversion);
+
     startTime = _startTime;
     endTime = _endTime;
     bankexEtherWallet = _bankexEtherWallet;
+    bankexTokenWallet = _bankexTokenWallet;
     minimumContributionInWei = _minimumContributionInWei;
     externalOracle = _externalOracle;
 
+    numberOfTranches = _trancheAmounts.length;
     tranches.length = numberOfTranches;
     for(uint256 i = 0; i < numberOfTranches; i++) {
       maxTokens += _trancheAmounts[i];
@@ -148,7 +162,7 @@ contract BankExCrowdsale is Ownable {
     require(!finalized);
     require(hasEnded());
     finalized = true;
-    assert(token.transfer(bankexEtherWallet, token.balanceOf(this))); //TODO: which bankexEtherWallet?
+    assert(token.transfer(bankexTokenWallet, token.balanceOf(this))); //TODO: which bankexEtherWallet?
     assert(token.unfreeze());
     // selfdestruct(bankexEtherWallet); // TODO: should we?
   }
