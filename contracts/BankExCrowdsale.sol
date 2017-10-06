@@ -19,7 +19,7 @@ contract BankExCrowdsale is Ownable {
   uint256 public endTime;
 
   // address where funds are collected
-  address public wallet;
+  address public bankexEtherWallet;
 
   // account that is authorized to:
   // - distribute tokens on behalf of investor without making Ether transfer
@@ -68,20 +68,20 @@ contract BankExCrowdsale is Ownable {
     externalOracle = newExternalOracle;
   }
 
-  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet, uint256 _minimumContributionInWei, address _externalOracle) {
+  function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _bankexEtherWallet, uint256 _minimumContributionInWei, address _externalOracle) {
     require(_trancheAmounts.length == _tranchePrices.length);
     numberOfTranches = _trancheAmounts.length;
     require(_startTime > now);
     require(_endTime > _startTime);
     require(_presaleConversion != address(0));
-    require(_wallet != address(0));
+    require(_bankexEtherWallet != address(0));
     /*require(_minimumContributionInWei >= uint256(10) ** 15);*/
     require(_externalOracle != address(0));
 
     token = new BankExToken(_presaleConversion);
     startTime = _startTime;
     endTime = _endTime;
-    wallet = _wallet;
+    bankexEtherWallet = _bankexEtherWallet;
     minimumContributionInWei = _minimumContributionInWei;
     externalOracle = _externalOracle;
 
@@ -126,7 +126,7 @@ contract BankExCrowdsale is Ownable {
 
   function () public payable {
     doPurchase(msg.sender, msg.value);
-    wallet.transfer(msg.value);
+    bankexEtherWallet.transfer(msg.value);
   }
 
   function doExternalPurchase(address investor, uint256 value, uint256 receipt) public onlyExternalOracle {
@@ -148,9 +148,9 @@ contract BankExCrowdsale is Ownable {
     require(!finalized);
     require(hasEnded());
     finalized = true;
-    assert(token.transfer(wallet, token.balanceOf(this))); //TODO: which wallet?
+    assert(token.transfer(bankexEtherWallet, token.balanceOf(this))); //TODO: which bankexEtherWallet?
     assert(token.unfreeze());
-    // selfdestruct(wallet); // TODO: should we?
+    // selfdestruct(bankexEtherWallet); // TODO: should we?
   }
 
   function isRunning() public constant returns (bool) {
