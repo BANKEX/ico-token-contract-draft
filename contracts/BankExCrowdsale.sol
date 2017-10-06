@@ -26,7 +26,7 @@ contract BankExCrowdsale is Ownable {
   // - register investors
   address public externalOracle;
 
-  Tranche[10] public tranches;
+  Tranche[] public tranches;
   uint256 public numberOfTranches;
 
   uint256 public minimumContributionInWei;
@@ -65,13 +65,12 @@ contract BankExCrowdsale is Ownable {
   function changeExternalOracle(address newExternalOracle) public onlyOwner {
     require(newExternalOracle != address(0));
     ExternalOracleChanged(externalOracle, newExternalOracle);
-    externalOracle = newExternalOracle;    
+    externalOracle = newExternalOracle;
   }
 
   function BankExCrowdsale(uint256[] _trancheAmounts, uint256[] _tranchePrices, uint256 _startTime, uint256 _endTime, address _presaleConversion, address _wallet, uint256 _minimumContributionInWei, address _externalOracle) {
     require(_trancheAmounts.length == _tranchePrices.length);
     numberOfTranches = _trancheAmounts.length;
-    require(numberOfTranches <= 10);
     require(_startTime > now);
     require(_endTime > _startTime);
     require(_presaleConversion != address(0));
@@ -86,6 +85,7 @@ contract BankExCrowdsale is Ownable {
     minimumContributionInWei = _minimumContributionInWei;
     externalOracle = _externalOracle;
 
+    tranches.length = numberOfTranches;
     for(uint256 i = 0; i < numberOfTranches; i++) {
       maxTokens += _trancheAmounts[i];
       tranches[i].amountUpperBound = maxTokens;
