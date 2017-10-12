@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract BankExToken is StandardToken, Ownable {
+contract BankexToken is StandardToken, Ownable {
 
   string public constant name = "BankEx Token";
   string public constant symbol = "BKX";
@@ -17,7 +17,7 @@ contract BankExToken is StandardToken, Ownable {
 
   address public pbkxConversion;
 
-  function BankExToken(address _pbkxConversion) {
+  function BankexToken(address _pbkxConversion) {
     require(_pbkxConversion != address(0));
     pbkxConversion = _pbkxConversion;
     balances[pbkxConversion] = reservedForPbkx;

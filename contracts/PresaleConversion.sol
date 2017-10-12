@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-import "./BankExToken.sol";
+import "./BankexToken.sol";
 
 contract PresaleConversion is Ownable {
 
@@ -13,7 +13,7 @@ contract PresaleConversion is Ownable {
   uint256 public constant multiplier = pbkxToBkxExchangeRate * (10 ** (bkxDecimals - pbkxDecimals));
 
   address public pbkxAddress; //TODO: constant
-  BankExToken public bkxContract; //TODO: constant
+  BankexToken public bkxContract; //TODO: constant
 
   event Conversion(address indexed investor, uint256 pbkxValue, uint256 bkxValue);
 
@@ -24,7 +24,7 @@ contract PresaleConversion is Ownable {
 
   function setBkxAddress(address _bkxAddress) onlyOwner {
     require(_bkxAddress != address(0));
-    bkxContract = BankExToken(_bkxAddress);
+    bkxContract = BankexToken(_bkxAddress);
   }
 
    /**

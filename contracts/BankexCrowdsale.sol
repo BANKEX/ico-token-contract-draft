@@ -1,13 +1,13 @@
 pragma solidity ^0.4.11;
 
-import "./BankExToken.sol";
+import "./BankexToken.sol";
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import "zeppelin-solidity/contracts/math/Math.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 /**
- * @title BankExCrowdsale
- * @dev BankExCrowdsale distributes BANKEX tokens (BKX).
+ * @title BankexCrowdsale
+ * @dev BankexCrowdsale distributes BANKEX tokens (BKX).
  *
  * The amount of tokens offered for the crowdsale is transferred to the crowdsale contract at the instantiation time.
  *
@@ -32,12 +32,12 @@ import "zeppelin-solidity/contracts/math/SafeMath.sol";
  *    It should also provide some kind of a receipt that will be stored on the Ethereum blockchain and can later be used to prove that the funds were actually transferred to BANKEX (e.g. BTC transaction hash).
  * In any case only registered investors can take part in the crowdsale, and the purchase amount should be greater than the specified minimum.
  */
-contract BankExCrowdsale is Ownable {
+contract BankexCrowdsale is Ownable {
   using SafeMath for uint256;
 
   // BANKEX token contract (the token being offered at the crowdsale).
-  // Is instantiated by the BankExCrowdsale contract at the construction time.
-  BankExToken public token;
+  // Is instantiated by the BankexCrowdsale contract at the construction time.
+  BankexToken public token;
 
   // UNIX timestamp after which investments are allowed (inclusive).
   uint256 public startTime;
@@ -117,7 +117,7 @@ contract BankExCrowdsale is Ownable {
     externalOracle = newExternalOracle;
   }
 
-  function BankExCrowdsale(
+  function BankexCrowdsale(
       uint256[] _trancheAmounts,
       uint256[] _tranchePrices,
       uint256 _startTime,
@@ -137,7 +137,7 @@ contract BankExCrowdsale is Ownable {
     require(_bankexTokenWallet != address(0));
     require(_externalOracle != address(0));
 
-    token = new BankExToken(_presaleConversion);
+    token = new BankexToken(_presaleConversion);
 
     startTime = _startTime;
     endTime = _endTime;

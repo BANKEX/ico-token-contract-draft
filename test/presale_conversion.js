@@ -6,23 +6,23 @@ const should = require('chai')
   .should();
 
 const TokenEscrow = artifacts.require('test/TokenEscrow.sol'); // PBKX token
-const BankExToken = artifacts.require('BankExToken');
+const BankexToken = artifacts.require('BankexToken');
 const PresaleConversion = artifacts.require('PresaleConversion');
-const BankExCrowdsale = artifacts.require('BankExCrowdsale');
+const BankexCrowdsale = artifacts.require('BankexCrowdsale');
 
 contract('PresaleConversion', function ([owner, investor, _]) {
 
   before(async function() {
     // this.pbkxToken = await TokenEscrow.new();
     // this.presaleConversion = await PresaleConversion.new(this.pbkxToken.address);
-    // this.bkxToken = await BankExToken.new(this.presaleConversion.address);
+    // this.bkxToken = await BankexToken.new(this.presaleConversion.address);
     // await this.pbkxToken.setToken(this.presaleConversion.address);
     // await this.pbkxToken.setRate(1);
     // await this.presaleConversion.setBkxAddress(this.bkxToken.address);
     this.pbkxToken = await TokenEscrow.deployed();
     this.presaleConversion = await PresaleConversion.deployed();
-    this.crowdsale = await BankExCrowdsale.deployed();
-    this.bkxToken = BankExToken.at(await this.crowdsale.token());
+    this.crowdsale = await BankexCrowdsale.deployed();
+    this.bkxToken = BankexToken.at(await this.crowdsale.token());
   });
 
   it("should convert PBKX to BKX", async function() {

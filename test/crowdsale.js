@@ -11,11 +11,11 @@ const should = require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should()
 
-const BankExCrowdsale = artifacts.require('BankExCrowdsale')
+const BankexCrowdsale = artifacts.require('BankexCrowdsale')
 const PresaleConversion = artifacts.require('PresaleConversion')
 const MintableToken = artifacts.require('MintableToken')
 
-contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _, investor, bankexEtherWallet, bankexTokenWallet, externalOracle]) {
+contract('BankexCrowdsale', function ([owner, someAccount, newExternalOracle, _, investor, bankexEtherWallet, bankexTokenWallet, externalOracle]) {
 
   const tokens = new BigNumber(1000000000000)
   const rate = new BigNumber(1000)
@@ -34,7 +34,7 @@ contract('BankExCrowdsale', function ([owner, someAccount, newExternalOracle, _,
     this.endTime =   this.startTime + duration.weeks(1)
     this.afterEndTime = this.endTime + duration.seconds(1)
 
-    this.crowdsale = await BankExCrowdsale.new([tokens], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle)
+    this.crowdsale = await BankexCrowdsale.new([tokens], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle)
     this.token = MintableToken.at(await this.crowdsale.token())
 
     this.initialSupply = await this.token.totalSupply()
