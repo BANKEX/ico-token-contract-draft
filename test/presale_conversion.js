@@ -5,7 +5,7 @@ const should = require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-const TokenEscrow = artifacts.require('TokenEscrow.sol'); // PBKX token
+const TokenEscrow = artifacts.require('test/TokenEscrow.sol'); // PBKX token
 const BankExToken = artifacts.require('BankExToken');
 const PresaleConversion = artifacts.require('PresaleConversion');
 const BankExCrowdsale = artifacts.require('BankExCrowdsale');

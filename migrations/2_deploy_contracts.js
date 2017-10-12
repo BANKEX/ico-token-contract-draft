@@ -1,4 +1,4 @@
-var TokenEscrow = artifacts.require("TokenEscrow.sol");
+var TokenEscrow = artifacts.require("test/TokenEscrow.sol");
 var BankExCrowdsale = artifacts.require("BankExCrowdsale.sol");
 var PresaleConversion = artifacts.require("PresaleConversion.sol");
 
