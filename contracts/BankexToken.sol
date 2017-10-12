@@ -28,35 +28,36 @@ contract BankexToken is StandardToken, Ownable {
 
   event Unfrozen();
 
-  function unfreeze() onlyOwner public returns (bool) {
+  function unfreeze() public onlyOwner  returns (bool) {
     require(frozen);
     frozen = false;
     Unfrozen();
     return true;
   }
 
-  modifier canMove() {
-    require(!frozen || msg.sender == pbkxConversion || msg.sender == owner);
+  modifier notFrozen() {
+    require(!frozen);
     _;
   }
 
-  function transfer(address _to, uint256 _value) public canMove returns (bool) {
+  function transfer(address _to, uint256 _value) public returns (bool) {
+    require(!frozen || msg.sender == owner || msg.sender == pbkxConversion);
     return super.transfer(_to, _value);
   }
 
-  function transferFrom(address _from, address _to, uint256 _value) public canMove returns (bool) {
+  function transferFrom(address _from, address _to, uint256 _value) public notFrozen returns (bool) {
     return super.transferFrom(_from, _to, _value);
   }
 
-  function approve(address _spender, uint256 _value) public canMove returns (bool) {
+  function approve(address _spender, uint256 _value) public notFrozen returns (bool) {
     return super.approve(_spender, _value);
   }
 
-  function increaseApproval(address _spender, uint _addedValue) public canMove returns (bool success) {
+  function increaseApproval(address _spender, uint _addedValue) public notFrozen returns (bool success) {
     return super.increaseApproval(_spender, _addedValue);
   }
 
-  function decreaseApproval(address _spender, uint _subtractedValue) public canMove returns (bool success) {
+  function decreaseApproval(address _spender, uint _subtractedValue) public notFrozen returns (bool success) {
     return super.decreaseApproval(_spender, _subtractedValue);
   }
 }
