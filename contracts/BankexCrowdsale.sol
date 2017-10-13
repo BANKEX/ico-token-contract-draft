@@ -137,7 +137,7 @@ contract BankexCrowdsale is Ownable {
     require(_bankexTokenWallet != address(0));
     require(_externalOracle != address(0));
 
-    token = new BankexToken(_presaleConversion);
+    token = new BankexToken(_bankexTokenWallet, _presaleConversion);
 
     startTime = _startTime;
     endTime = _endTime;

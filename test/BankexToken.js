@@ -12,11 +12,15 @@ const BankexToken = artifacts.require('BankexToken')
 const fromAccountBalance = new BigNumber(1000)
 const value = new BigNumber(10)
 
-contract('BankexToken', function ([_, owner, pbkxConversion, someAccount, fromAccount, toAccount, spenderAccount]) {
+contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, someAccount, fromAccount, toAccount, spenderAccount]) {
 
   beforeEach(async function () {
-    this.token = await BankexToken.new(pbkxConversion, {from: owner})
+    this.token = await BankexToken.new(bankexTokenWallet, pbkxConversion, {from: owner})
     await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})
+  })
+
+  it('Bankex token wallet should be specified', async function() {
+    await BankexToken.new(null, pbkxConversion, {from: owner}).should.be.rejectedWith(EVMThrow)
   })
 
   it('has an owner', async function() {
