@@ -30,10 +30,12 @@ contract('PresaleConversion', function ([owner, investor, _]) {
     const pbkxBalance = await this.pbkxToken.balanceOf(investor);
     const pbkxDecimals = await this.pbkxToken.decimals();
     const pbkxTokens = pbkxBalance.div(new BigNumber(10).pow(pbkxDecimals));
+    const oldBkxBalance = await this.bkxToken.balanceOf(investor);
     await this.pbkxToken.convert({from: investor});
-    const bkxBalance = await this.bkxToken.balanceOf(investor);
+    const newBkxBalance = await this.bkxToken.balanceOf(investor);
+    const diff = newBkxBalance.sub(oldBkxBalance);
     const bkxDecimals = await this.bkxToken.decimals();
-    const bkxTokens = bkxBalance.div(new BigNumber(10).pow(bkxDecimals));
+    const bkxTokens = diff.div(new BigNumber(10).pow(bkxDecimals));
     bkxTokens.should.be.bignumber.equal(pbkxTokens);
   });
 })

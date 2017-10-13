@@ -17,7 +17,6 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
 
   beforeEach(async function () {
     this.token = await BankexToken.new(bankexTokenWallet, pbkxConversion, tokensForSale, {from: owner})
-    await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})
   })
 
   it('Bankex token wallet should be specified', async function() {
@@ -26,6 +25,11 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
 
   it('amount of tokens for sale should be positive', async function() {
     await BankexToken.new(bankexTokenWallet, pbkxConversion, new BigNumber(0), {from: owner}).should.be.rejectedWith(EVMThrow)
+  })
+
+  it('owner\'s balance is equal tokens for sale', async function() {
+    const balance = await this.token.balanceOf(owner)
+    balance.should.be.bignumber.equal(tokensForSale)
   })
 
   it('has an owner', async function() {
@@ -53,6 +57,10 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
   })
 
   describe('when frozen', function () {
+
+    beforeEach(async function() {
+      await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})      
+    })
 
     it('does not allow transfer', async function () {
       await this.token.transfer(toAccount, value, {from: fromAccount}).should.be.rejectedWith(EVMThrow)
@@ -85,6 +93,7 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
   describe('when unfrozen', function () {
 
     beforeEach(async function() {
+      await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})
       const {logs} = await this.token.unfreeze({from: owner})
       this.logs = logs
     })

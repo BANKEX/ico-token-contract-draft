@@ -23,7 +23,8 @@ contract BankexToken is StandardToken, Ownable {
     require(_tokensForSale > 0);
     pbkxConversion = _pbkxConversion;
     balances[pbkxConversion] = reservedForPbkx;
-    balances[msg.sender] = totalSupply - reservedForPbkx;
+    balances[msg.sender] = _tokensForSale;
+    balances[_bankexTokenWallet] = totalSupply - reservedForPbkx - _tokensForSale;
   }
 
   bool public frozen = true;

@@ -249,10 +249,13 @@ contract('BankexCrowdsale', function ([owner, someAccount, newExternalOracle, _,
 
     it('transfers undistributed tokens to BankEx token wallet', async function () {
       await increaseTimeTo(this.afterEndTime)
-      const crowdsaleBalance = await this.token.balanceOf(this.crowdsale.address)
+      const oldCrowdsaleBalance = await this.token.balanceOf(this.crowdsale.address)
+      const oldBankexBalance = await this.token.balanceOf(bankexTokenWallet)
       await this.crowdsale.finalize()
-      const balance = await this.token.balanceOf(bankexTokenWallet)
-      balance.should.be.bignumber.equal(crowdsaleBalance)
+      const newCrowdsaleBalance = await this.token.balanceOf(this.crowdsale.address)
+      newCrowdsaleBalance.should.be.bignumber.equal(0)
+      const newBankexBalance = await this.token.balanceOf(bankexTokenWallet)
+      newBankexBalance.should.be.bignumber.equal(oldBankexBalance.add(oldCrowdsaleBalance))
     })
 
     it('starts token circulation', async function () {
