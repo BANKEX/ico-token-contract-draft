@@ -6,11 +6,17 @@ Ethereum smart contracts that distribute BANKEX tokens (BKX).
 
 BKX is an ERC-20 compatible token.
 
-<!BKX is a fixed supply token, meaning all the .
-fixed supply
-all tokens are created when contract is deployed
-part is reserved for early presale
-part for BANKEX>
+* The token contract is created by the crowdsale contract.
+* BKX has fixed total supply
+* Tokens offered for the crowdsale are transferred to the crowdsale contract at creation time
+* 3,000,000 BKX are reserved fro pre-sale (PBKX) investors
+* All remaining tokens are stored on BANKEX balance
+
+BKX movement is restricted until explicitly allowed.
+Only parties authorized to transfer BKX until that are:
+1. The crowdsale contract -- to distribute tokens purchased at the crowdsale
+2. PBKX conversion contract -- to perform conversion 
+3. Bankex -- to distribute among the team and pre-sale investors (non-PBKX)
 
 ### Pre-Sale Token Conversion
 3,000,000 of tokens, known as [PBKX,](https://etherscan.io/token/0x5aC0197C944c961F58bb02F3d0Df58a74FDC15B6) 
