@@ -2,8 +2,10 @@ pragma solidity ^0.4.11;
 
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract BankexToken is StandardToken, Ownable {
+  using SafeMath for uint256;
 
   string public constant name = "BankEx Token";
   string public constant symbol = "BKX";
@@ -16,15 +18,17 @@ contract BankexToken is StandardToken, Ownable {
   uint256 public constant reservedForPbkx  = 3000000 * multiplier; //TODO: finalize
 
   address public pbkxConversion;
+  address public bankexTokenWallet;
 
   function BankexToken(address _bankexTokenWallet, address _pbkxConversion, uint256 _tokensForSale) {
     require(_bankexTokenWallet != address(0));
     require(_pbkxConversion != address(0));
     require(_tokensForSale > 0);
+    bankexTokenWallet = _bankexTokenWallet;
     pbkxConversion = _pbkxConversion;
     balances[pbkxConversion] = reservedForPbkx;
     balances[msg.sender] = _tokensForSale;
-    balances[_bankexTokenWallet] = totalSupply - reservedForPbkx - _tokensForSale;
+    balances[_bankexTokenWallet] = totalSupply.sub(reservedForPbkx).sub(_tokensForSale);
   }
 
   bool public frozen = true;

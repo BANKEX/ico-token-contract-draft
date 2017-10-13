@@ -23,6 +23,11 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
     await BankexToken.new(null, pbkxConversion, tokensForSale, {from: owner}).should.be.rejectedWith(EVMThrow)
   })
 
+  it('Bankex token wallet is set', async function() {
+    const _bankexTokenWallet = await this.token.bankexTokenWallet()
+    _bankexTokenWallet.should.equal(bankexTokenWallet)
+  })
+
   it('amount of tokens for sale should be positive', async function() {
     await BankexToken.new(bankexTokenWallet, pbkxConversion, new BigNumber(0), {from: owner}).should.be.rejectedWith(EVMThrow)
   })
@@ -32,6 +37,13 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
     balance.should.be.bignumber.equal(tokensForSale)
   })
 
+  it('there should be enough tokens', async function() {
+    const totalSupply = await this.token.totalSupply()
+    const reservedForPbkx = await this.token.reservedForPbkx()
+    const tokensForSale = totalSupply.sub(reservedForPbkx).add(1)
+    await BankexToken.new(bankexTokenWallet, pbkxConversion, tokensForSale, {from: owner}).should.be.rejectedWith(EVMThrow)
+  })
+  
   it('has an owner', async function() {
     const _owner = await this.token.owner()
     _owner.should.equal(owner)
@@ -59,7 +71,7 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
   describe('when frozen', function () {
 
     beforeEach(async function() {
-      await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})      
+      await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})
     })
 
     it('does not allow transfer', async function () {
