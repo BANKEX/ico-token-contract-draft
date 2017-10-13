@@ -203,9 +203,7 @@ contract BankexCrowdsale is Ownable {
   }
 
   /**
-   * @dev Finalizes the crowdsale:
-   * 1. Transfers undistributed tokens from the crowdsale contract back to BANKEX.
-   * 2. Allows transfer of the BKX token.
+   * @dev Transfers undistributed tokens from the crowdsale contract back to BANKEX.
    * Can be called:
    * - only by the crowdsale contract owner
    * - only after the crowdsale has ended (either end time is reached or all tokens has been distributed)
@@ -216,7 +214,6 @@ contract BankexCrowdsale is Ownable {
     require(hasEnded());
     finalized = true;
     assert(token.transfer(bankexTokenWallet, token.balanceOf(this)));
-    assert(token.unfreeze());
     Finalized(tokensSold);
   }
 

@@ -258,20 +258,6 @@ contract('BankexCrowdsale', function ([owner, someAccount, newExternalOracle, _,
       newBankexBalance.should.be.bignumber.equal(oldBankexBalance.add(oldCrowdsaleBalance))
     })
 
-    it('starts token circulation', async function () {
-      await increaseTimeTo(this.startTime)
-      await this.crowdsale.register(investor, {from: externalOracle})
-      await this.crowdsale.doExternalPurchase(investor, tokens.mul(rate), receipt, {from: externalOracle})
-      await this.token.transfer(someAccount, 1, {from: investor}).should.be.rejectedWith(EVMThrow)
-
-      await increaseTimeTo(this.afterEndTime)
-      await this.crowdsale.finalize()
-
-      await this.token.transfer(someAccount, 1, {from: investor})
-      const balance = await this.token.balanceOf(someAccount)
-      balance.should.be.bignumber.equal(1)
-    })
-
     it('logs event', async function () {
       await increaseTimeTo(this.startTime)
       await this.crowdsale.register(investor, {from: externalOracle})
