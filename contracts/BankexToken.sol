@@ -35,7 +35,8 @@ contract BankexToken is StandardToken, Ownable {
 
   event Unfrozen();
 
-  function unfreeze() public onlyOwner  returns (bool) {
+  function unfreeze() public returns (bool) {
+    require(msg.sender == bankexTokenWallet);
     require(frozen);
     frozen = false;
     Unfrozen();

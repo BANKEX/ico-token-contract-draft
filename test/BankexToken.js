@@ -53,19 +53,19 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
     (await this.token.frozen()).should.be.true
   })
 
-  it('can be unfrozen by the owner', async function() {
-    await this.token.unfreeze({from: owner})
+  it('can be unfrozen by Bankex token wallet', async function() {
+    await this.token.unfreeze({from: bankexTokenWallet})
     const frozen = await this.token.frozen()
     frozen.should.be.false
   })
 
-  it('can be unfrozen only by the owner', async function() {
+  it('can be unfrozen only by Bankex token wallet', async function() {
     await this.token.unfreeze({from: someAccount}).should.be.rejectedWith(EVMThrow)
   })
 
   it('can be unfrozen only once', async function() {
-    await this.token.unfreeze({from: owner})
-    await this.token.unfreeze({from: owner}).should.be.rejectedWith(EVMThrow)
+    await this.token.unfreeze({from: bankexTokenWallet})
+    await this.token.unfreeze({from: bankexTokenWallet}).should.be.rejectedWith(EVMThrow)
   })
 
   describe('when frozen', function () {
@@ -112,7 +112,7 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
 
     beforeEach(async function() {
       await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})
-      const {logs} = await this.token.unfreeze({from: owner})
+      const {logs} = await this.token.unfreeze({from: bankexTokenWallet})
       this.logs = logs
     })
 

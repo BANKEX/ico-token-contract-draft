@@ -60,8 +60,17 @@ Tokens can be purchased in 2 ways:
 In any case only registered investors can take part in the crowdsale, and the purchase amount should be greater than the specified minimum.
 
 #### Refund
+No change as tokens are sold in token subunits and the price of a subunit is infinitesimal.
+If some investor hits the hard cap, her change will be refunded with a manual Ether transfer.  
 
 #### Finalization
+If the crowdsale ends, but not all the tokens offered are sold out,
+the crowdsale contract owner should call `finalize()` function of the crowdsale contract.
+Then all the remaining tokens are transferred to BANKEX.
+
+#### Unfreezing Token
+To start free token circulation BANKEX should call `unfreeze()` function of the token contract.
+After that BANKEX has no ability to freeze it any more.
 
 ### Test Coverage
 From project folder run:
