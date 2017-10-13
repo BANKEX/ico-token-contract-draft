@@ -56,3 +56,10 @@ In any case only registered investors can take part in the crowdsale, and the pu
 #### Refund
 
 #### Finalization
+
+### Test Coverage
+From project folder run:
+```
+./node_modules/.bin/testrpc-sc
+./node_modules/.bin/solidity-coverage
+```
