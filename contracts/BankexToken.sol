@@ -17,9 +17,10 @@ contract BankexToken is StandardToken, Ownable {
 
   address public pbkxConversion;
 
-  function BankexToken(address _bankexTokenWallet, address _pbkxConversion) {
+  function BankexToken(address _bankexTokenWallet, address _pbkxConversion, uint256 _tokensForSale) {
     require(_bankexTokenWallet != address(0));
     require(_pbkxConversion != address(0));
+    require(_tokensForSale > 0);
     pbkxConversion = _pbkxConversion;
     balances[pbkxConversion] = reservedForPbkx;
     balances[msg.sender] = totalSupply - reservedForPbkx;

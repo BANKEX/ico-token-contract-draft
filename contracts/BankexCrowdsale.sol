@@ -137,8 +137,6 @@ contract BankexCrowdsale is Ownable {
     require(_bankexTokenWallet != address(0));
     require(_externalOracle != address(0));
 
-    token = new BankexToken(_bankexTokenWallet, _presaleConversion);
-
     startTime = _startTime;
     endTime = _endTime;
     bankexEtherWallet = _bankexEtherWallet;
@@ -153,6 +151,8 @@ contract BankexCrowdsale is Ownable {
       tranches[i].amountUpperBound = maxTokens;
       tranches[i].price = _tranchePrices[i];
     }
+
+    token = new BankexToken(_bankexTokenWallet, _presaleConversion, maxTokens);
   }
 
   function register(address investor) public onlyExternalOracle {

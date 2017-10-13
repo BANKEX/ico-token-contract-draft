@@ -9,18 +9,23 @@ const should = require('chai')
 
 const BankexToken = artifacts.require('BankexToken')
 
-const fromAccountBalance = new BigNumber(1000)
+const tokensForSale = new BigNumber(1000)
+const fromAccountBalance = new BigNumber(100)
 const value = new BigNumber(10)
 
 contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, someAccount, fromAccount, toAccount, spenderAccount]) {
 
   beforeEach(async function () {
-    this.token = await BankexToken.new(bankexTokenWallet, pbkxConversion, {from: owner})
+    this.token = await BankexToken.new(bankexTokenWallet, pbkxConversion, tokensForSale, {from: owner})
     await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})
   })
 
   it('Bankex token wallet should be specified', async function() {
-    await BankexToken.new(null, pbkxConversion, {from: owner}).should.be.rejectedWith(EVMThrow)
+    await BankexToken.new(null, pbkxConversion, tokensForSale, {from: owner}).should.be.rejectedWith(EVMThrow)
+  })
+
+  it('amount of tokens for sale should be positive', async function() {
+    await BankexToken.new(bankexTokenWallet, pbkxConversion, new BigNumber(0), {from: owner}).should.be.rejectedWith(EVMThrow)
   })
 
   it('has an owner', async function() {
