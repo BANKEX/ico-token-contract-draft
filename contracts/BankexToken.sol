@@ -48,7 +48,7 @@ contract BankexToken is StandardToken, Ownable {
   }
 
   function transfer(address _to, uint256 _value) public returns (bool) {
-    require(!frozen || msg.sender == owner || msg.sender == pbkxConversion);
+    require(!frozen || msg.sender == owner || msg.sender == pbkxConversion || msg.sender == bankexTokenWallet);
     return super.transfer(_to, _value);
   }
 
