@@ -42,8 +42,6 @@ The crowdsale contract interoperates with the External Oracle account that is a 
 1. Distribute tokens on behalf of investor without making direct Ether transfer to the crowdsale contract.
 2. Register investors.
 
-BANKEX crowdsale distributes tokens in a semi-trustless manner.    
-
 #### KYC
 Only registered investors are allowed to take part in the crowdsale. 
 
@@ -71,6 +69,13 @@ Then all the remaining tokens are transferred to BANKEX.
 #### Unfreezing Token
 To start free token circulation BANKEX should call `unfreeze()` function of the token contract.
 After that BANKEX has no ability to freeze it any more.
+
+### Testing
+From project folder run:
+```
+./node_modules/.bin/testrpc
+./node_modules/.bin/truffle test
+```
 
 ### Test Coverage
 From project folder run:
