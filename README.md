@@ -73,6 +73,7 @@ After that BANKEX has no ability to freeze it any more.
 ### Testing
 From project folder run:
 ```
+npm install
 ./node_modules/.bin/testrpc
 ./node_modules/.bin/truffle test
 ```
@@ -80,6 +81,7 @@ From project folder run:
 ### Test Coverage
 From project folder run:
 ```
+npm install
 ./node_modules/.bin/testrpc-sc
 ./node_modules/.bin/solidity-coverage
 ```
