@@ -1,76 +1,81 @@
 pragma solidity ^0.4.11;
 
+
 import "zeppelin-solidity/contracts/token/StandardToken.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
+
 contract BankexToken is StandardToken, Ownable {
-  using SafeMath for uint256;
+    using SafeMath for uint256;
 
-  string public constant name = "BankEx Token";
-  string public constant symbol = "BKX";
-  uint8 public constant decimals = 18;
+    string public constant name = "BankEx Token";
 
-  uint256 private constant multiplier = 10 ** uint256(decimals);
+    string public constant symbol = "BKX";
 
-  uint256 public constant totalSupply = 222387500 * multiplier; //TODO: finalize
+    uint8 public constant decimals = 18;
 
-  uint256 public constant reservedForPbkx  = 3000000 * multiplier; //TODO: finalize
+    uint256 private constant multiplier = 10 ** uint256(decimals);
 
-  address public pbkxToken;
-  address public bankexTokenWallet;
+    uint256 public constant totalSupply = 222387500 * multiplier; //TODO: finalize
 
-  function BankexToken(address _bankexTokenWallet, address _pbkxToken, uint256 _tokensForSale) {
-    require(_bankexTokenWallet != address(0));
-    require(_pbkxToken != address(0));
-    require(_tokensForSale > 0);
-    bankexTokenWallet = _bankexTokenWallet;
-    pbkxToken = _pbkxToken;
-    balances[pbkxToken] = reservedForPbkx;
-    balances[msg.sender] = _tokensForSale;
-    balances[_bankexTokenWallet] = totalSupply.sub(reservedForPbkx).sub(_tokensForSale);
-  }
+    uint256 public constant reservedForPbkx = 3000000 * multiplier; //TODO: finalize
 
-  bool public frozen = true;
+    address public pbkxToken;
 
-  event Unfrozen();
+    address public bankexTokenWallet;
 
-  function unfreeze() public returns (bool) {
-    require(msg.sender == bankexTokenWallet);
-    require(frozen);
-    frozen = false;
-    Unfrozen();
-    return true;
-  }
+    function BankexToken(address _bankexTokenWallet, address _pbkxToken, uint256 _tokensForSale) {
+        require(_bankexTokenWallet != address(0));
+        require(_pbkxToken != address(0));
+        require(_tokensForSale > 0);
+        bankexTokenWallet = _bankexTokenWallet;
+        pbkxToken = _pbkxToken;
+        balances[pbkxToken] = reservedForPbkx;
+        balances[msg.sender] = _tokensForSale;
+        balances[_bankexTokenWallet] = totalSupply.sub(reservedForPbkx).sub(_tokensForSale);
+    }
 
-  modifier notFrozen() {
-    require(!frozen);
-    _;
-  }
+    bool public frozen = true;
 
-  function transfer(address _to, uint256 _value) public returns (bool) {
-    require(!frozen || msg.sender == owner || msg.sender == bankexTokenWallet);
-    return super.transfer(_to, _value);
-  }
+    event Unfrozen();
 
-  function transferFrom(address _from, address _to, uint256 _value) public notFrozen returns (bool) {
-    return super.transferFrom(_from, _to, _value);
-  }
+    function unfreeze() public returns (bool) {
+        require(msg.sender == bankexTokenWallet);
+        require(frozen);
+        frozen = false;
+        Unfrozen();
+        return true;
+    }
 
-  function approve(address _spender, uint256 _value) public notFrozen returns (bool) {
-    return super.approve(_spender, _value);
-  }
+    modifier notFrozen() {
+        require(!frozen);
+        _;
+    }
 
-  function increaseApproval(address _spender, uint _addedValue) public notFrozen returns (bool success) {
-    return super.increaseApproval(_spender, _addedValue);
-  }
+    function transfer(address _to, uint256 _value) public returns (bool) {
+        require(!frozen || msg.sender == owner || msg.sender == bankexTokenWallet);
+        return super.transfer(_to, _value);
+    }
 
-  function decreaseApproval(address _spender, uint _subtractedValue) public notFrozen returns (bool success) {
-    return super.decreaseApproval(_spender, _subtractedValue);
-  }
+    function transferFrom(address _from, address _to, uint256 _value) public notFrozen returns (bool) {
+        return super.transferFrom(_from, _to, _value);
+    }
 
-  function transferFromOwner(address _to, uint256 _value) public returns (bool) {
-    require(msg.sender == pbkxToken);
-    return super.transfer(_to, _value);
-  }
+    function approve(address _spender, uint256 _value) public notFrozen returns (bool) {
+        return super.approve(_spender, _value);
+    }
+
+    function increaseApproval(address _spender, uint _addedValue) public notFrozen returns (bool success) {
+        return super.increaseApproval(_spender, _addedValue);
+    }
+
+    function decreaseApproval(address _spender, uint _subtractedValue) public notFrozen returns (bool success) {
+        return super.decreaseApproval(_spender, _subtractedValue);
+    }
+
+    function transferFromOwner(address _to, uint256 _value) public returns (bool) {
+        require(msg.sender == pbkxToken);
+        return super.transfer(_to, _value);
+    }
 }
