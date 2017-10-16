@@ -17,16 +17,16 @@ contract BankexToken is StandardToken, Ownable {
 
   uint256 public constant reservedForPbkx  = 3000000 * multiplier; //TODO: finalize
 
-  address public pbkxConversion;
+  address public pbkxToken;
   address public bankexTokenWallet;
 
-  function BankexToken(address _bankexTokenWallet, address _pbkxConversion, uint256 _tokensForSale) {
+  function BankexToken(address _bankexTokenWallet, address _pbkxToken, uint256 _tokensForSale) {
     require(_bankexTokenWallet != address(0));
-    require(_pbkxConversion != address(0));
+    require(_pbkxToken != address(0));
     require(_tokensForSale > 0);
     bankexTokenWallet = _bankexTokenWallet;
-    pbkxConversion = _pbkxConversion;
-    balances[pbkxConversion] = reservedForPbkx;
+    pbkxToken = _pbkxToken;
+    balances[pbkxToken] = reservedForPbkx;
     balances[msg.sender] = _tokensForSale;
     balances[_bankexTokenWallet] = totalSupply.sub(reservedForPbkx).sub(_tokensForSale);
   }
@@ -49,7 +49,7 @@ contract BankexToken is StandardToken, Ownable {
   }
 
   function transfer(address _to, uint256 _value) public returns (bool) {
-    require(!frozen || msg.sender == owner || msg.sender == pbkxConversion || msg.sender == bankexTokenWallet);
+    require(!frozen || msg.sender == owner || msg.sender == bankexTokenWallet);
     return super.transfer(_to, _value);
   }
 
