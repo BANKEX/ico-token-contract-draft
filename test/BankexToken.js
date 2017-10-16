@@ -13,14 +13,14 @@ const tokensForSale = new BigNumber(1000)
 const fromAccountBalance = new BigNumber(100)
 const value = new BigNumber(10)
 
-contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, someAccount, fromAccount, toAccount, spenderAccount]) {
+contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxToken, someAccount, fromAccount, toAccount, spenderAccount]) {
 
   beforeEach(async function () {
-    this.token = await BankexToken.new(bankexTokenWallet, pbkxConversion, tokensForSale, {from: owner})
+    this.token = await BankexToken.new(bankexTokenWallet, pbkxToken, tokensForSale, {from: owner})
   })
 
   it('Bankex token wallet should be specified', async function() {
-    await BankexToken.new(null, pbkxConversion, tokensForSale, {from: owner}).should.be.rejectedWith(EVMThrow)
+    await BankexToken.new(null, pbkxToken, tokensForSale, {from: owner}).should.be.rejectedWith(EVMThrow)
   })
 
   it('Bankex token wallet is set', async function() {
@@ -29,7 +29,7 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
   })
 
   it('amount of tokens for sale should be positive', async function() {
-    await BankexToken.new(bankexTokenWallet, pbkxConversion, new BigNumber(0), {from: owner}).should.be.rejectedWith(EVMThrow)
+    await BankexToken.new(bankexTokenWallet, pbkxToken, new BigNumber(0), {from: owner}).should.be.rejectedWith(EVMThrow)
   })
 
   it('owner\'s balance is equal tokens for sale', async function() {
@@ -41,7 +41,7 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxConversion, 
     const totalSupply = await this.token.totalSupply()
     const reservedForPbkx = await this.token.reservedForPbkx()
     const tokensForSale = totalSupply.sub(reservedForPbkx).add(1)
-    await BankexToken.new(bankexTokenWallet, pbkxConversion, tokensForSale, {from: owner}).should.be.rejectedWith(EVMThrow)
+    await BankexToken.new(bankexTokenWallet, pbkxToken, tokensForSale, {from: owner}).should.be.rejectedWith(EVMThrow)
   })
 
   it('has an owner', async function() {
