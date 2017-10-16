@@ -108,48 +108,29 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxToken, someA
     })
   })
 
-  describe('when unfrozen', function () {
+  describe('transferFromOwner', function () {
 
-    beforeEach(async function() {
-      await this.token.transfer(fromAccount, fromAccountBalance, {from: owner})
-      const {logs} = await this.token.unfreeze({from: bankexTokenWallet})
-      this.logs = logs
-    })
-
-    it('logs an event', async function () {
-      should.exist(this.logs.find(e => e.event === 'Unfrozen'))
-    })
-
-    it('allows transfer', async function () {
-      await this.token.transfer(toAccount, value, {from: fromAccount})
+    it('can be called by pbkxToken', async function () {
+      await this.token.transferFromOwner(toAccount, value, {from: pbkxToken})
       const balance = await this.token.balanceOf(toAccount)
       balance.should.be.bignumber.equal(value)
     })
 
-    it('allows transferFrom', async function () {
-      await this.token.approve(spenderAccount, value, {from: fromAccount})
-      await this.token.transferFrom(fromAccount, toAccount, value, {from: spenderAccount})
+    it('can be called only by pbkxToken', async function () {
+      await this.token.transferFromOwner(toAccount, value, {from: someAccount}).should.be.rejectedWith(EVMThrow)
+    })
+
+    const bkx3m = 3 * (10 ** 6) * (10 ** 18)
+
+    it('pbkxToken is authorized to distribute 3m BKX', async function () {
+      await this.token.transferFromOwner(toAccount, bkx3m, {from: pbkxToken})
       const balance = await this.token.balanceOf(toAccount)
-      balance.should.be.bignumber.equal(value)
+      balance.should.be.bignumber.equal(bkx3m)
     })
 
-    it('allows approve', async function () {
-      await this.token.approve(spenderAccount, value, {from: fromAccount})
-      const allowance = await this.token.allowance(fromAccount, spenderAccount)
-      allowance.should.be.bignumber.equal(value)
-    })
-
-    it('allows increaseApproval', async function () {
-      await this.token.increaseApproval(spenderAccount, value, {from: fromAccount})
-      const allowance = await this.token.allowance(fromAccount, spenderAccount)
-      allowance.should.be.bignumber.equal(value)
-    })
-
-    it('allows decreaseApproval', async function () {
-      await this.token.approve(spenderAccount, value, {from: fromAccount})
-      await this.token.decreaseApproval(spenderAccount, value, {from: fromAccount})
-      const allowance = await this.token.allowance(fromAccount, spenderAccount)
-      allowance.should.be.bignumber.equal(0)
+    it('pbkxToken can not distribute more than 3m BKX', async function () {
+      await this.token.transferFromOwner(toAccount, bkx3m, {from: pbkxToken})
+      await this.token.transferFromOwner(toAccount, 1, {from: pbkxToken}).should.be.rejectedWith(EVMThrow)
     })
   })
 })

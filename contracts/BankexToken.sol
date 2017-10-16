@@ -70,6 +70,7 @@ contract BankexToken is StandardToken, Ownable {
   }
 
   function transferFromOwner(address _to, uint256 _value) public returns (bool) {
+    require(msg.sender == pbkxToken);
     return super.transfer(_to, _value);
   }
 }
