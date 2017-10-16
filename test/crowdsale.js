@@ -11,8 +11,9 @@ const should = require('chai')
   .should()
 
 const BankexCrowdsale = artifacts.require('BankexCrowdsale')
-const PresaleConversion = artifacts.require('PresaleConversion')
+const TokenEscrow = artifacts.require('test/TokenEscrow.sol'); // PBKX token
 const BankexToken = artifacts.require('BankexToken')
+
 
 contract('BankexCrowdsale', function ([owner, someAccount, newExternalOracle, _, investor, bankexEtherWallet, bankexTokenWallet, externalOracle]) {
 
@@ -33,7 +34,7 @@ contract('BankexCrowdsale', function ([owner, someAccount, newExternalOracle, _,
     this.endTime =   this.startTime + duration.weeks(1)
     this.afterEndTime = this.endTime + duration.seconds(1)
 
-    this.crowdsale = await BankexCrowdsale.new([tokens], [rate], this.startTime, this.endTime, PresaleConversion.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle)
+    this.crowdsale = await BankexCrowdsale.new([tokens], [rate], this.startTime, this.endTime, TokenEscrow.address, bankexEtherWallet, bankexTokenWallet, 1000000, externalOracle)
     this.token = BankexToken.at(await this.crowdsale.token())
 
     this.initialSupply = await this.token.totalSupply()

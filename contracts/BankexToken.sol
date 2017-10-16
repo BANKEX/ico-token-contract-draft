@@ -68,4 +68,8 @@ contract BankexToken is StandardToken, Ownable {
   function decreaseApproval(address _spender, uint _subtractedValue) public notFrozen returns (bool success) {
     return super.decreaseApproval(_spender, _subtractedValue);
   }
+
+  function transferFromOwner(address _to, uint256 _value) public returns (bool) {
+    return super.transfer(_to, _value);
+  }
 }

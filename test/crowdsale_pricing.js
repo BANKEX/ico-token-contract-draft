@@ -10,7 +10,7 @@ const should = require('chai')
   .should();
 
 const MintableToken = artifacts.require('MintableToken');
-const PresaleConversion = artifacts.require('PresaleConversion');
+const TokenEscrow = artifacts.require('test/TokenEscrow.sol'); // PBKX token
 const BankexCrowdsale = artifacts.require('BankexCrowdsale');
 
 contract('BankexCrowdsale', function ([_, investor, wallet, externalOracle]) {
@@ -19,7 +19,7 @@ contract('BankexCrowdsale', function ([_, investor, wallet, externalOracle]) {
     await advanceBlock();
     this.startTime = latestTime() + duration.weeks(1);
     this.endTime =   this.startTime + duration.weeks(1);
-    this.crowdsale = await BankexCrowdsale.new([10, 10, 10], [10, 20, 30], this.startTime, this.endTime, PresaleConversion.address, wallet, wallet, 1, externalOracle);
+    this.crowdsale = await BankexCrowdsale.new([10, 10, 10], [10, 20, 30], this.startTime, this.endTime, TokenEscrow.address, wallet, wallet, 1, externalOracle);
     this.crowdsale.register(investor, {from: externalOracle});
     this.token = MintableToken.at(await this.crowdsale.token());
     await increaseTimeTo(this.startTime);

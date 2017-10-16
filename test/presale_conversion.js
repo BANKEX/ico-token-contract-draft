@@ -7,7 +7,6 @@ const should = require('chai')
 
 const TokenEscrow = artifacts.require('test/TokenEscrow.sol'); // PBKX token
 const BankexToken = artifacts.require('BankexToken');
-const PresaleConversion = artifacts.require('PresaleConversion');
 const BankexCrowdsale = artifacts.require('BankexCrowdsale');
 
 contract('PresaleConversion', function ([owner, investor, _]) {
@@ -20,7 +19,6 @@ contract('PresaleConversion', function ([owner, investor, _]) {
     // await this.pbkxToken.setRate(1);
     // await this.presaleConversion.setBkxAddress(this.bkxToken.address);
     this.pbkxToken = await TokenEscrow.deployed();
-    this.presaleConversion = await PresaleConversion.deployed();
     this.crowdsale = await BankexCrowdsale.deployed();
     this.bkxToken = BankexToken.at(await this.crowdsale.token());
   });
