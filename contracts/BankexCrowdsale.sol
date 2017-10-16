@@ -73,11 +73,11 @@ contract BankexCrowdsale is Ownable {
     uint256 public tokensSold = 0;
 
     struct Tranche {
-    // Upper bound (inclusive) in token subunits for this tranche.
-    // A tranche i is active while tranches[i-1].amountUpperBound < tokensSold <= tranches[i].amountUpperBound.
-    uint256 amountUpperBound;
-    // Price in wei for a token subunit for this tranche.
-    uint256 price;
+        // Upper bound (inclusive) in token subunits for this tranche.
+        // A tranche i is active while tranches[i-1].amountUpperBound < tokensSold <= tranches[i].amountUpperBound.
+        uint256 amountUpperBound;
+        // Price in wei for a token subunit for this tranche.
+        uint256 price;
     }
 
     // Array of tranches.
@@ -123,15 +123,15 @@ contract BankexCrowdsale is Ownable {
     }
 
     function BankexCrowdsale(
-    uint256[] _trancheAmounts,
-    uint256[] _tranchePrices,
-    uint256 _startTime,
-    uint256 _endTime,
-    address _presaleConversion,
-    address _bankexEtherWallet,
-    address _bankexTokenWallet,
-    uint256 _minimumContributionInWei,
-    address _externalOracle
+        uint256[] _trancheAmounts,
+        uint256[] _tranchePrices,
+        uint256 _startTime,
+        uint256 _endTime,
+        address _presaleConversion,
+        address _bankexEtherWallet,
+        address _bankexTokenWallet,
+        uint256 _minimumContributionInWei,
+        address _externalOracle
     ) {
         require(_trancheAmounts.length == _tranchePrices.length);
         require(_trancheAmounts.length > 0);
