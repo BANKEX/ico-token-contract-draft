@@ -34,6 +34,7 @@
     "chai-as-promised": "^7.0.0",
     "chai-bignumber": "^2.0.0",
     "ethereumjs-testrpc": "^4.0.1",
+    "sol-merger": "^0.1.0",
     "solidity-coverage": "^0.2.6",
     "solium": "^1.0.0",
     "truffle": "^3.4.8",
