@@ -9,11 +9,11 @@ import "zeppelin-solidity/contracts/math/SafeMath.sol";
 contract BankexToken is StandardToken, Ownable {
     using SafeMath for uint256;
 
-    string public constant name = "BankEx Token";
+    string public constant name = "BANKEX Token";
 
     string public constant symbol = "BKX";
 
-    uint8 public constant decimals = 18;
+    uint8 public constant decimals = 9;
 
     uint256 private constant multiplier = 10 ** uint256(decimals);
 

@@ -17,6 +17,7 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxToken, someA
 
   beforeEach(async function () {
     this.token = await BankexToken.new(bankexTokenWallet, pbkxToken, tokensForSale, {from: owner})
+    this.decimals = await this.token.decimals()
   })
 
   it('Bankex token wallet should be specified', async function() {
@@ -120,15 +121,15 @@ contract('BankexToken', function ([_, owner, bankexTokenWallet, pbkxToken, someA
       await this.token.transferFromOwner(toAccount, value, {from: someAccount}).should.be.rejectedWith(EVMThrow)
     })
 
-    const bkx3m = 3 * (10 ** 6) * (10 ** 18)
-
     it('pbkxToken is authorized to distribute 3m BKX', async function () {
+      const bkx3m = new BigNumber(10).pow(this.decimals).mul(3 * 10**6)
       await this.token.transferFromOwner(toAccount, bkx3m, {from: pbkxToken})
       const balance = await this.token.balanceOf(toAccount)
       balance.should.be.bignumber.equal(bkx3m)
     })
 
     it('pbkxToken can not distribute more than 3m BKX', async function () {
+      const bkx3m = new BigNumber(10).pow(this.decimals).mul(3 * 10**6)
       await this.token.transferFromOwner(toAccount, bkx3m, {from: pbkxToken})
       await this.token.transferFromOwner(toAccount, 1, {from: pbkxToken}).should.be.rejectedWith(EVMThrow)
     })
