@@ -124,12 +124,12 @@ Provide a comma-separated list of constructor arguments in the input next to the
 Then, make sure that the right account is selected in MetaMask, push the *Create* button and wait for the transaction to succeed.
 Don't close the Remix yet!
 ---  
-For example, the crowdsale [instantiated](https://ropsten.etherscan.io/address/0xe037de2fefc9ae8fa61bad1537984041a2b55ada)
+For example, the crowdsale [instantiated](https://ropsten.etherscan.io/address/0x28489450d345ce706fe0cabde41ce037e472684e)
 with the following parameters: 
 ```
-[3000000000000, 2000000000000, 1000000000000], [1000000, 2000000, 3000000], 1508328000, 1508500800, "d1734F44aA4361515849d3384E909ceC4E2497CB", "Dff3a68F3fA9B2BfeE10C41eDae37cf58a0Aef8c", "Ed5F646B581AB16Fb4c8A4073D43E60F97520b78", 1000000000000000, "35c67d569F43eF474e163D3E859B050B8A089998"  
+[3000000000000, 2000000000000, 1000000000000], [1000000, 2000000, 3000000], 1508343600, 1508500800, "0xd1734F44aA4361515849d3384E909ceC4E2497CB", "0xDff3a68F3fA9B2BfeE10C41eDae37cf58a0Aef8c", "0xEd5F646B581AB16Fb4c8A4073D43E60F97520b78", 1000000000000000, "0x35c67d569F43eF474e163D3E859B050B8A089998"  
 ```
-* runs from 10/18/2017 @ 12:00pm (UTC) to 10/20/2017 @ 12:00pm (UTC);
+* runs from 10/18/2017 @ 4:20pm (UTC) to 10/20/2017 @ 12:00pm (UTC);
 * distributes the tokens in 3 tranches: first 3000 tokens for 1 finney each, next 2000 tokens for 2 finneys each, and the last 1000 tokens for 3 finneys each;
 * with 1 finney minimal contribution possible;
 * and the addresses specified:
