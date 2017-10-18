@@ -93,12 +93,26 @@ npm install
 ./node_modules/.bin/solium -d contracts
 ```
 
-### Deployment
-PBKX contract address
-PBKX contract owner private key
+### Deployment with Remix and MetaMask
 
-1. From project folder run:
+###### 1. Preparation
+
+To deploy the crowdsale contract you need to know:
+1. BANKEX Ether wallet account address.
+2. BANKEX token wallet account address.
+3. External Oracle account address.
+
+**Make sure that the responsible parties have access to these accounts.**
+
+To configure PBKX to BKX token conversion you will also need the access to the pre-sale contract [owner account.](https://etherscan.io/address/0x941d283983c7a80a2a3db7ab05e1df3b46feba3f)
+
+Clone the repository and make sure that the HEAD is at the revision you want to deploy (e.g. the revision that passed the audit):
 ```
+git clone https://github.com/BankEx/ico-token-contract-draft.git
+```
+
+```
+cd ico-token-contract-draft
 npm install
 node ./node_modules/sol-merger/bin/sol-merger.js ./contracts/BankexCrowdsale.sol ./build/flattened
 ```
@@ -123,6 +137,7 @@ Provide a comma-separated list of constructor arguments in the input next to the
   
 Then, make sure that the right account is selected in MetaMask, push the *Create* button and wait for the transaction to succeed.
 Don't close the Remix yet!
+
 ---  
 For example, the crowdsale [instantiated](https://ropsten.etherscan.io/address/0x28489450d345ce706fe0cabde41ce037e472684e)
 with the following parameters: 
@@ -147,9 +162,9 @@ You need to specify *Contract Name* (BankexCrowdsale), *Compiler* (0.4.17+commit
 and copy-and-paste the contract code. Finally you need to provide the constructor arguments, you used in ABI encoding. To do that:
 1. Open the transaction that created the contract at Etherscan (by clicking the transaction in MetaMask) and copy-and-paste the data 
 from the *Input Data* field to a text file.
-2. In Remix, go to the 'Compile' tab, make sure that the BankexCrowdsale contract is selected in the dropdown, click the 'Details' button,
+2. In Remix, go to the *Compile* tab, make sure that the BankexCrowdsale contract is selected in the dropdown, click the *Details* button,
 and copy-and-paste the data from the *BYTECODE* field to the text file.
 3. Notice that the first string is identical to the second with the exception of the last bytes. These bytes (the difference between the 2 strings)
 is the ABI-encoded arguments you need.
 
-Push 'Verify And Publish' and hopefully you are done!   
+Push *Verify And Publish* and hopefully you are done!   
